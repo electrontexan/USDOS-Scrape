@@ -2,118 +2,155 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Device Connected</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Device Upload Simulation</title>
   <style>
     body {
-      background-color: black;
-      color: #00ff00;
+      background: #6b4b3b;
+      color: white;
       font-family: monospace;
       text-align: center;
-      padding: 20px;
+      padding: 32px;
     }
-    .device-text {
-      font-size: 14px;
-      margin-bottom: 10px;
-      opacity: 0.8;
+    .container{
+      max-width:900px;
+      width:100%;
+      margin:0 auto;
     }
-    .seal {
-      max-width: 150px;
-      margin: 10px auto;
-      display: block;
+    .status{
+      font-size:20px;
+      margin-bottom:20px;
+      font-weight:700;
+      color:white;
     }
-    .upload-area {
-      margin-top: 20px;
-      text-align: left;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
+    .seal-wrap{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin: 12px 0 24px 0;
     }
-    .file-line {
-      margin: 4px 0;
+    .seal{
+      width:220px;
+      height:auto;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.35));
     }
-    .progress-bar {
-      height: 6px;
-      background-color: #003300;
-      margin-top: 2px;
-      border: 1px solid #00ff00;
-      position: relative;
+    .upload{
+      font-size:18px;
+      font-weight:600;
+      color:#00ff00;
+      min-height:40px;
+      margin-top:12px;
     }
-    .progress-fill {
-      height: 100%;
-      background-color: #00ff00;
-      width: 0%;
+    .progress-bar{
+      width:100%;
+      height:8px;
+      background:rgba(255,255,255,0.15);
+      border-radius:4px;
+      overflow:hidden;
+      margin-top:6px;
+      transition: opacity 0.5s ease;
+    }
+    .progress-fill{
+      height:100%;
+      width:0%;
+      background:#00ff00;
+      transition:width 0.2s linear;
+    }
+    .hidden{
+      opacity:0;
+    }
+    .flash {
+      animation: flash 1.5s ease-in-out infinite;
+    }
+    @keyframes flash {
+      0% { opacity: 0.2; }
+      50% { opacity: 1; }
+      100% { opacity: 0.2; }
     }
   </style>
 </head>
 <body>
-  <div class="device-text">《 《DEVICE CONNECTED》》</div>
-  <img class="seal" src="seal.png" alt="Seal">
-
-  <div class="upload-area" id="uploadArea"></div>
+  <div class="container">
+    <div class="status">DEVICE CONNECTED</div>
+    <div class="seal-wrap">
+      <img class="seal" src="seal.png" alt="Seal">
+    </div>
+    <div class="upload" id="uploadText">Initializing...</div>
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
 
   <script>
+    const uploadText = document.getElementById("uploadText");
+    const progressFill = document.getElementById("progressFill");
+    const progressBar = document.getElementById("progressBar");
+
     const files = [
-      "system32.dll", "boot.img", "contacts.db", "messages.db", 
-      "camera_roll1.jpg", "camera_roll2.jpg", "notes.txt", "appdata.bin", 
-      "cache.tmp", "user_settings.json", "wifi_config.xml", "calendar.ics",
-      "thumbs.db", "media_file.mp4", "logfile.log"
+      "sys/config.dat","sys/boot.log","media/DCIM_001.jpg","media/DCIM_002.jpg","media/song1.mp3",
+      "docs/notes.txt","apps/appdata.json","cache/tmp_23.tmp","cache/tmp_45.tmp","contacts/list.vcf",
+      "messages/chat_001.db","messages/chat_002.db","photos/family1.png","photos/vacation2.jpg",
+      "downloads/file_1.pdf","downloads/file_2.zip","system/driver.dll","system/kernel.sys",
+      "android/settings.db","android/accounts.xml","storage/data_1.bin","storage/data_2.bin",
+      "backup/2024-05-01.bak","backup/2024-06-15.bak","camera/video1.mp4","camera/video2.mp4",
+      "browser/history.dat","browser/cookies.sqlite","logs/error.log","logs/system.log",
+      "games/save_1.sav","games/save_2.sav","cloud/sync_001.json","cloud/sync_002.json",
+      "music/track01.mp3","music/track02.mp3","music/track03.mp3","music/track04.mp3",
+      "pictures/img001.jpg","pictures/img002.jpg","pictures/img003.jpg","pictures/img004.jpg",
+      "system/fonts.ttf","system/lang.dat","system/ui_config.json","users/profile1.cfg",
+      "users/profile2.cfg","bin/exe_01","bin/exe_02","bin/exe_03","bin/exe_04"
     ];
-    const uploadArea = document.getElementById("uploadArea");
 
-    function createFileLine(fileName) {
-      const container = document.createElement("div");
-      container.className = "file-line";
+    let index = 0;
+    const startTime = Date.now();
+    const maxDuration = 2 * 60 * 1000; // 2 minutes in milliseconds
 
-      const label = document.createElement("div");
-      label.textContent = "Uploading: " + fileName;
+    function uploadNext(){
+      const elapsed = Date.now() - startTime;
+      if(elapsed >= maxDuration){
+        // End uploads and show UPLOAD COMPLETE
+        uploadText.textContent = "UPLOAD COMPLETE";
+        progressBar.classList.add("hidden");
+        uploadText.classList.add("flash");
+        return;
+      }
 
-      const progressBar = document.createElement("div");
-      progressBar.className = "progress-bar";
+      let file;
+      let longFile = false;
 
-      const progressFill = document.createElement("div");
-      progressFill.className = "progress-fill";
+      // Every 15 files, insert the long special file
+      if(index % 15 === 0){
+        file = "Breaking message encryption...";
+        longFile = true;
+      } else {
+        file = files[index % files.length];
+      }
 
-      progressBar.appendChild(progressFill);
-      container.appendChild(label);
-      container.appendChild(progressBar);
-
-      uploadArea.appendChild(container);
+      uploadText.textContent = "Uploading: " + file;
+      progressFill.style.width = "0%";
+      progressBar.classList.remove("hidden");
 
       let progress = 0;
-      const speed = Math.random() * 3 + 0.5; // random speed
+      const speed = longFile ? 1 + Math.random() * 2 : Math.random() * 20 + 5;
 
-      function step() {
-        progress += speed;
-        if (progress > 100) progress = 100;
-        progressFill.style.width = progress + "%";
-
-        if (progress < 100) {
-          requestAnimationFrame(step);
+      const interval = setInterval(()=>{
+        progress += Math.random() * speed;
+        if(progress >= 100){
+          progress = 100;
+          progressFill.style.width = "100%";
+          clearInterval(interval);
+          progressBar.classList.add("hidden");
+          setTimeout(()=>{
+            index++;
+            uploadNext();
+          }, longFile ? 1000 : 400);
+        } else {
+          progressFill.style.width = progress + "%";
         }
-      }
-      requestAnimationFrame(step);
+      }, 100);
     }
 
-    function startUploads() {
-      uploadArea.innerHTML = "";
-      let index = 0;
-
-      function nextFile() {
-        if (index >= files.length) {
-          // restart loop
-          setTimeout(startUploads, 1000);
-          return;
-        }
-        createFileLine(files[index]);
-        index++;
-        setTimeout(nextFile, Math.random() * 1000 + 500); // random delay before next
-      }
-
-      nextFile();
-    }
-
-    startUploads();
+    uploadNext();
   </script>
 </body>
 </html>
