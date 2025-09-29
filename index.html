@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>US DOS SCRAPE</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -12,8 +12,10 @@
     font-family: 'Roboto Mono', monospace;
     margin:0;
     padding:0;
+    overflow-x: hidden;
   }
 
+  /* Banner */
   .banner {
     display:flex;
     align-items:center;
@@ -25,25 +27,25 @@
     box-shadow:0 1px 4px rgba(0,0,0,0.2);
   }
   .banner img { width:30px; height:auto; }
-  .banner-text { font-family:'Times New Roman', Times, serif; font-size:14px; font-weight:bold; text-transform:uppercase; }
-  .banner-text .fancy { font-family:cursive; font-size:10px; text-transform:lowercase; margin:0 2px; }
+  .banner-text { font-family:'Times New Roman', Times, serif; font-size:16px; font-weight:bold; text-transform:uppercase; }
+  .banner-text .fancy { font-family:cursive; font-size:12px; text-transform:lowercase; margin:0 2px; }
 
-  .container { max-width:800px; margin:10px; position:relative; }
-  .status { font-family:'Press Start 2P'; font-size:6px; font-weight:700; margin-bottom:4px; }
-  .upload-line {
-    font-family:'Press Start 2P';
-    font-size:4px;
+  /* Main content */
+  .container { max-width:700px; margin:20px; }
+  .status { font-size:14px; font-weight:700; margin-bottom:6px; text-align:left; }
+  .upload {
+    font-family:'Press Start 2P', monospace;
+    font-size:5px;
     color:#888;
+    min-height:12px;
     display:flex;
     align-items:center;
+    justify-content:flex-start;
     gap:2px;
-    min-height:8px;
   }
-  .file-icon { width:5px; height:5px; }
-
   .progress-bar {
     width:100%;
-    height:1px;
+    height:2px;
     background:rgba(0,0,0,0.1);
     overflow:hidden;
     margin-top:1px;
@@ -52,78 +54,68 @@
   .progress-fill {
     height:100%;
     width:0%;
-    background:#888;
+    background:#555;
     border-radius:0;
   }
-
+  .hidden { opacity:0; }
   .flash { animation: flash 1.5s ease-in-out infinite; }
-  @keyframes flash {
-    0% { opacity:0.2; }
-    50% { opacity:1; }
-    100% { opacity:0.2; }
+  @keyframes flash { 0%{opacity:0.2}50%{opacity:1}100%{opacity:0.2} }
+
+  .file-icon { width:5px; height:5px; }
+
+  /* Pop-up */
+  .popup {
+    position:absolute;
+    background:white;
+    border:2px solid black;
+    width:250px;
+    top:70px;
+    left:50px;
+    padding:10px;
+    z-index:1000;
+    font-family:'Arial', sans-serif;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    box-shadow:3px 3px 6px rgba(0,0,0,0.3);
+  }
+  .popup button {
+    padding:4px 10px;
+    font-size:12px;
+    cursor:pointer;
   }
 
+  /* Footer */
   footer {
-    margin-top:2000px;
+    margin-top:1200px;
     padding:10px 5px;
-    font-size:3px;
+    font-size:5px;
     color:#555;
-    line-height:1.2em;
+    line-height:1.3em;
     text-align:center;
   }
   footer .cryptic { font-family:'Roboto Mono', monospace; color:#333; }
-
-  /* Persistent Windows-style popup */
-  #popup {
-    position:absolute;
-    top:50px;
-    left:50%;
-    transform:translateX(-50%);
-    background:white;
-    color:black;
-    padding:10px 20px;
-    font-family:'Press Start 2P';
-    font-size:7px;
-    border:2px solid black;
-    z-index:999;
-    text-align:center;
-    box-shadow:3px 3px 6px rgba(0,0,0,0.3);
-  }
-  #popup button {
-    font-family:'Press Start 2P';
-    font-size:5px;
-    padding:2px 5px;
-    cursor:pointer;
-    border:1px solid black;
-    background:white;
-    color:black;
-    font-weight:bold;
-  }
-
-  @keyframes shake {
-    0% { transform: translateX(-50%) translateY(0); }
-    25% { transform: translateX(-50%) translateY(-1.5px); }
-    50% { transform: translateX(-50%) translateY(1.5px); }
-    75% { transform: translateX(-50%) translateY(-1.5px); }
-    100% { transform: translateX(-50%) translateY(0); }
-  }
 </style>
 </head>
 <body>
 
+<!-- Banner -->
 <div class="banner">
   <img src="seal.png" alt="Seal">
   <div class="banner-text">U.S. DEPARTMENT <span class="fancy">of</span> STATE</div>
 </div>
 
+<!-- Main content -->
 <div class="container">
   <div class="status">DEVICE SCRAPE</div>
-  <div id="uploadContainer" class="upload-line"></div>
+  <div class="upload" id="uploadText"></div>
   <div class="progress-bar" id="progressBar">
     <div class="progress-fill" id="progressFill"></div>
   </div>
 </div>
 
+<!-- Footer -->
 <footer>
   <div>Official website of the U.S. Department of State</div>
   <div>&copy; 2025 U.S. Department of State. All rights reserved.</div>
@@ -131,100 +123,75 @@
   <div class="cryptic">Unauthorized access is prohibited. All activity may be monitored and reported.</div>
 </footer>
 
-<div id="popup">
-  Scrape in progress
-  <br><br>
-  <button id="stopBtn">OK</button>
+<!-- Pop-up -->
+<div class="popup" id="popup">
+  <div>Scrape in progress</div>
+  <button id="okButton">OK</button>
 </div>
 
 <script>
-const uploadContainer = document.getElementById("uploadContainer");
+const uploadText = document.getElementById("uploadText");
 const progressFill = document.getElementById("progressFill");
 const progressBar = document.getElementById("progressBar");
+const popup = document.getElementById("popup");
+const okButton = document.getElementById("okButton");
 
-const files = [
-  "sys/core_x01.bin","sys/kernel_x02.sys","sys/bootloader.cfg","sys/initramfs.img",
-  "config/settings_x03.dat","config/userdb_x04.db","cache/tmp_99.tmp","cache/tmp_a1.tmp",
-  "storage/data_a12.bin","storage/data_b23.bin","logs/log_20250929.log","logs/error_001.log",
-  "apps/lib_core_x.dll","apps/lib_ui_y.dll","bin/exec_01.bin","bin/exec_02.bin",
-  "backup/backup_0501.bak","backup/backup_0615.bak","network/net_001.cfg","network/net_002.cfg",
-  "system/fonts_x.ttf","system/lang_x.dat","system/ui_config_x.json","users/profile_a.cfg",
-  "users/profile_b.cfg","temp/cache0a.tmp","temp/cache0b.tmp","temp/cache0c.tmp"
-];
+// Generate cryptic file names
+const files = Array.from({length:100}, (_,i)=>`sys/conf_${i}.dat`);
 
+// Long breaking message file
+const longFile = "Breaking message encryption...";
 let index = 0;
 let longFileDone = false;
-const startTime = Date.now();
-const maxDuration = 2*60*1000;
 
+// Upload animation
 function uploadNext() {
-  const elapsed = Date.now() - startTime;
-  if(elapsed >= maxDuration){
-    uploadContainer.textContent = "UPLOAD COMPLETE";
-    progressBar.style.display="none";
-    uploadContainer.classList.add("flash");
-    return;
-  }
-
-  let file;
-  let longFile = false;
-
-  if(!longFileDone && index > 10){
-    file = "Breaking message encryption...";
-    longFile = true;
-    longFileDone = true;
-  } else {
-    file = files[index % files.length];
-  }
-
-  uploadContainer.innerHTML = `<img class="file-icon" src="https://cdn-icons-png.flaticon.com/512/109/109612.png" alt="file"> ${file}`;
-  progressFill.style.width="0%";
-  progressBar.style.display="block";
-
+  let fileToShow = (!longFileDone && index > 10) ? (longFileDone = true, longFile) : files[index % files.length];
+  uploadText.textContent = fileToShow;
+  progressFill.style.width = "0%";
+  progressBar.classList.remove("hidden");
   let progress = 0;
 
-  function step() {
-    const jump = (Math.random()*12) - 1.5;
+  const interval = setInterval(()=>{
+    let jump = Math.random() * (fileToShow===longFile?2:15);
     progress += jump;
-    if(progress<0) progress=0;
-    if(progress>100) progress=100;
-    progressFill.style.width = progress + "%";
-
     if(progress>=100){
+      progress=100;
       progressFill.style.width="100%";
-      progressBar.style.display="none";
-      setTimeout(()=>{
-        index++;
-        uploadNext();
-      }, longFile?1200:400);
+      clearInterval(interval);
+      progressBar.classList.add("hidden");
+      setTimeout(()=>{ index++; uploadNext(); }, fileToShow===longFile?1200:300);
     } else {
-      const interval = Math.random()*120 + 50;
-      setTimeout(step, interval);
+      progressFill.style.width = progress + "%";
     }
-  }
-  step();
+  },80);
 }
-
 uploadNext();
 
-// Popup logic
-const popup = document.getElementById('popup');
-const stopBtn = document.getElementById('stopBtn');
-
-function showPopup() { 
-  popup.style.display = 'block'; 
-  popup.style.animation = 'shake 0.5s';
-  setTimeout(()=>{ popup.style.animation = ''; }, 500);
+// Pop-up fullscreen logic
+function requestFullScreen(){
+  if(document.fullscreenElement) return;
+  const docEl = document.documentElement;
+  if(docEl.requestFullscreen) docEl.requestFullscreen();
+  else if(docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+  else if(docEl.msRequestFullscreen) docEl.msRequestFullscreen();
 }
 
-stopBtn.addEventListener('click', () => {
-  popup.style.display = 'none';
-  const randomDelay = Math.floor(Math.random()*20000)+10000; // 10-30 sec
-  setTimeout(showPopup, randomDelay);
+// Show pop-up at random interval
+function showPopupRandom() {
+  popup.style.display="flex";
+  requestFullScreen();
+  const randomDelay = Math.floor(Math.random()*20000)+10000; // 10-30s
+  setTimeout(showPopupRandom, randomDelay);
+}
+
+// OK button closes popup
+okButton.addEventListener("click", ()=>{
+  popup.style.display="none";
 });
 
-showPopup();
-document.addEventListener('contextmenu', e => e.preventDefault());
+// Start the first pop-up cycle
+showPopupRandom();
 </script>
 
 </body>
