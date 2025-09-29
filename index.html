@@ -76,14 +76,14 @@
   /* Persistent Windows-style popup */
   #popup {
     position:absolute;
-    top:10px;
+    top:50px; /* lowered so it’s below animation */
     left:50%;
     transform:translateX(-50%);
     background:white;
     color:black;
-    padding:15px 25px;
+    padding:10px 20px; /* smaller */
     font-family:'Press Start 2P';
-    font-size:8px;
+    font-size:7px;
     border:2px solid black;
     z-index:999;
     text-align:center;
@@ -91,8 +91,8 @@
   }
   #popup button {
     font-family:'Press Start 2P';
-    font-size:6px;
-    padding:3px 6px;
+    font-size:5px;
+    padding:2px 5px;
     cursor:pointer;
     border:1px solid black;
     background:white;
@@ -102,9 +102,9 @@
 
   @keyframes shake {
     0% { transform: translateX(-50%) translateY(0); }
-    25% { transform: translateX(-50%) translateY(-2px); }
-    50% { transform: translateX(-50%) translateY(2px); }
-    75% { transform: translateX(-50%) translateY(-2px); }
+    25% { transform: translateX(-50%) translateY(-1.5px); }
+    50% { transform: translateX(-50%) translateY(1.5px); }
+    75% { transform: translateX(-50%) translateY(-1.5px); }
     100% { transform: translateX(-50%) translateY(0); }
   }
 </style>
@@ -207,7 +207,7 @@ function uploadNext() {
 
 uploadNext();
 
-// Persistent popup logic
+// Popup logic
 const popup = document.getElementById('popup');
 const stopBtn = document.getElementById('stopBtn');
 
@@ -219,11 +219,11 @@ function showPopup() {
 
 stopBtn.addEventListener('click', () => {
   popup.style.display = 'none';
-  setTimeout(showPopup, 500); 
+  const randomDelay = Math.floor(Math.random()*8000)+3000; // 3-11 sec
+  setTimeout(showPopup, randomDelay);
 });
 
 showPopup();
-
 document.addEventListener('contextmenu', e => e.preventDefault());
 </script>
 
