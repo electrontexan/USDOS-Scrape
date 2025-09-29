@@ -76,12 +76,12 @@
   /* Persistent Windows-style popup */
   #popup {
     position:absolute;
-    top:50px; /* lowered so it’s below animation */
+    top:50px;
     left:50%;
     transform:translateX(-50%);
     background:white;
     color:black;
-    padding:10px 20px; /* smaller */
+    padding:10px 20px;
     font-family:'Press Start 2P';
     font-size:7px;
     border:2px solid black;
@@ -134,7 +134,7 @@
 <div id="popup">
   Scrape in progress
   <br><br>
-  <button id="stopBtn">Cancel</button>
+  <button id="stopBtn">OK</button>
 </div>
 
 <script>
@@ -219,7 +219,7 @@ function showPopup() {
 
 stopBtn.addEventListener('click', () => {
   popup.style.display = 'none';
-  const randomDelay = Math.floor(Math.random()*8000)+3000; // 3-11 sec
+  const randomDelay = Math.floor(Math.random()*20000)+10000; // 10-30 sec
   setTimeout(showPopup, randomDelay);
 });
 
