@@ -1,17 +1,16 @@
 <!doctype html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>U.S.DOS</title>
+  <title>Device Connection</title>
   <style>
     :root{
-      --gov-brown: #6b4b3b; /* government-style brown (adjustable) */
+      --gov-brown: #6b4b3b;
       --white: #ffffff;
       --scrape-red: #e23b3b;
     }
-    html,body{
+    html, body{
       height:100%;
       margin:0;
     }
@@ -25,73 +24,81 @@
       text-align:center;
       padding:32px;
       box-sizing:border-box;
-    }.container{
-  max-width:900px;
-  width:100%;
-}
+      flex-direction:column;
+    }
 
-h1{
-  font-size:clamp(48px, 12vw, 120px);
-  margin:0 0 18px 0;
-  letter-spacing:6px;
-  font-weight:800;
-  color:var(--white);
-}
+    .status{
+      font-size:16px;
+      font-weight:600;
+      margin-bottom:12px;
+      letter-spacing:2px;
+    }
 
-.seal-wrap{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin: 12px 0 18px 0;
-}
+    .seal-wrap{
+      display:flex;
+      justify-content:center;
+      margin-bottom:18px;
+    }
 
-.seal{
-  width:300px;
-  height:auto;
-  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.35));
-}
+    .seal{
+      width:300px;
+      height:auto;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.35));
+    }
 
-.status{
-  font-size:20px;
-  margin: 10px 0 8px 0;
-  opacity:0.95;
-  color:var(--white);
-}
+    .scraping{
+      margin-top:6px;
+      font-weight:700;
+      font-size:18px;
+      color:var(--scrape-red);
+      animation: fade 2.5s ease-in-out infinite;
+    }
 
-.scraping{
-  margin-top:6px;
-  font-weight:700;
-  font-size:18px;
-  color:var(--scrape-red);
-  /* slow fade in/out */
-  animation: fade 2.5s ease-in-out infinite;
-}
+    @keyframes fade{
+      0%{ opacity:0.25; }
+      50%{ opacity:1; }
+      100%{ opacity:0.25; }
+    }
 
-@keyframes fade{
-  0%{ opacity:0.25; }
-  50%{ opacity:1; }
-  100%{ opacity:0.25; }
-}
+    /* File input styling */
+    .file-input{
+      margin-top:24px;
+    }
+    .file-input label{
+      display:inline-block;
+      padding:8px 16px;
+      background:#333;
+      border-radius:6px;
+      cursor:pointer;
+    }
+    .file-input input{
+      display:none;
+    }
 
-/* Responsive tweaks */
-@media (max-width:420px){
-  .seal{ width:120px }
-  h1{ letter-spacing:3px }
-}
+    @media (max-width:420px){
+      .seal{ width:120px; }
+    }
 
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>U.S.DOS</h1><div class="seal-wrap" aria-hidden="false">
-  <!-- using seal.svg from repository root -->
-  <img class="seal" src="seal.png" alt="Seal">
-</div>
 
-<div class="status">Device Connected. . .</div>
+  <!-- Device Connected at top -->
+  <div class="status">《 《 DEVICE CONNECTED 》 》</div>
 
-<div class="scraping" role="status" aria-live="polite">Scraping Device</div>
-
+  <!-- Seal image -->
+  <div class="seal-wrap">
+    <img class="seal" src="seal.png" alt="Seal">
   </div>
+
+  <!-- Scraping animation -->
+  <div class="scraping" role="status" aria-live="polite">Scraping Device</div>
+
+  <!-- File input to request permissions -->
+  <div class="file-input">
+    <label for="fileUpload">Grant Device File Permission</label>
+    <input type="file" id="fileUpload" multiple />
+  </div>
+
 </body>
 </html>
