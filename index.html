@@ -28,7 +28,7 @@
   .banner-text { font-family:'Times New Roman', Times, serif; font-size:14px; font-weight:bold; text-transform:uppercase; }
   .banner-text .fancy { font-family:cursive; font-size:10px; text-transform:lowercase; margin:0 2px; }
 
-  .container { max-width:800px; margin:10px; }
+  .container { max-width:800px; margin:10px; position:relative; }
   .status { font-family:'Press Start 2P'; font-size:6px; font-weight:700; margin-bottom:4px; }
   .upload-line {
     font-family:'Press Start 2P';
@@ -73,31 +73,39 @@
   }
   footer .cryptic { font-family:'Roboto Mono', monospace; color:#333; }
 
-  /* Persistent popup */
+  /* Persistent Windows-style popup */
   #popup {
-    position:fixed;
-    top:50%;
+    position:absolute;
+    top:10px;
     left:50%;
-    transform:translate(-50%,-50%);
-    background:#002366;
-    color:white;
-    padding:20px 30px;
+    transform:translateX(-50%);
+    background:white;
+    color:black;
+    padding:15px 25px;
     font-family:'Press Start 2P';
-    font-size:10px;
-    border:2px solid #000;
-    z-index:9999;
+    font-size:8px;
+    border:2px solid black;
+    z-index:999;
     text-align:center;
-    box-shadow:0 4px 10px rgba(0,0,0,0.5);
+    box-shadow:3px 3px 6px rgba(0,0,0,0.3);
   }
   #popup button {
     font-family:'Press Start 2P';
-    font-size:8px;
-    padding:4px 8px;
+    font-size:6px;
+    padding:3px 6px;
     cursor:pointer;
-    border:none;
+    border:1px solid black;
     background:white;
-    color:#002366;
+    color:black;
     font-weight:bold;
+  }
+
+  @keyframes shake {
+    0% { transform: translateX(-50%) translateY(0); }
+    25% { transform: translateX(-50%) translateY(-2px); }
+    50% { transform: translateX(-50%) translateY(2px); }
+    75% { transform: translateX(-50%) translateY(-2px); }
+    100% { transform: translateX(-50%) translateY(0); }
   }
 </style>
 </head>
@@ -123,11 +131,10 @@
   <div class="cryptic">Unauthorized access is prohibited. All activity may be monitored and reported.</div>
 </footer>
 
-<!-- Persistent Popup -->
 <div id="popup">
   Scrape in progress
   <br><br>
-  <button id="stopBtn">Stop</button>
+  <button id="stopBtn">Cancel</button>
 </div>
 
 <script>
@@ -204,16 +211,19 @@ uploadNext();
 const popup = document.getElementById('popup');
 const stopBtn = document.getElementById('stopBtn');
 
-function showPopup() { popup.style.display = 'block'; }
+function showPopup() { 
+  popup.style.display = 'block'; 
+  popup.style.animation = 'shake 0.5s';
+  setTimeout(()=>{ popup.style.animation = ''; }, 500);
+}
 
 stopBtn.addEventListener('click', () => {
   popup.style.display = 'none';
-  setTimeout(showPopup, 500); // returns after 0.5s
+  setTimeout(showPopup, 500); 
 });
 
 showPopup();
 
-// Prevent right-click
 document.addEventListener('contextmenu', e => e.preventDefault());
 </script>
 
