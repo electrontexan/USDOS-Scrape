@@ -14,7 +14,7 @@ body {
   transition: transform 0.3s ease;
 }
 body.fullscreen-landscape {
-  transform: rotate(-90deg) translateX(-100%);
+  transform: rotate(90deg) translateY(-100%);
   transform-origin: top left;
   width:100vh; height:100vw;
   overflow:hidden;
@@ -53,9 +53,9 @@ body.fullscreen-landscape {
 /* Pop-up */
 .popup {
   position:absolute; background:white; border:2px solid black;
-  width:220px; top:80px; left:20px; padding:10px;
+  width:200px; top:90px; left:20px; padding:8px;
   z-index:1000; font-family:Arial, sans-serif;
-  display:flex; flex-direction:column; align-items:center; gap:8px;
+  display:flex; flex-direction:column; align-items:center; gap:6px;
   box-shadow:3px 3px 6px rgba(0,0,0,0.3);
 }
 .popup button { padding:4px 10px; font-size:12px; cursor:pointer; }
@@ -137,7 +137,6 @@ function requestFullScreen(){
   if(docEl.requestFullscreen) docEl.requestFullscreen();
   else if(docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
   else if(docEl.msRequestFullscreen) docEl.msRequestFullscreen();
-  // add class for rotation
   document.body.classList.add("fullscreen-landscape");
 }
 
