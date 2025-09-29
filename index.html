@@ -1,0 +1,142 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>U.S.DOS</title>
+  <style>
+    :root{
+      --gov-brown: #6b4b3b; /* government-style brown (adjustable) */
+    }
+    html,body{
+      height:100%;
+      margin:0;
+    }
+    body{
+      background: var(--gov-brown);
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:32px;
+      box-sizing:border-box;
+    }.container{
+  max-width:900px;
+  width:100%;
+}
+
+h1{
+  font-size:clamp(48px, 12vw, 120px);
+  margin:0 0 18px 0;
+  letter-spacing:6px;
+  font-weight:800;
+  color:#fff;
+}
+
+.seal-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin: 12px 0 18px 0;
+}
+
+.seal{
+  width:180px;
+  height:auto;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.35));
+}
+
+.status{
+  font-size:20px;
+  margin: 10px 0 8px 0;
+  opacity:0.95;
+}
+
+.download-anim{
+  margin-top:6px;
+  font-weight:600;
+  font-size:18px;
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+}
+
+/* Animated dots */
+.dots span{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  background:currentColor;
+  border-radius:50%;
+  margin-left:6px;
+  opacity:0.2;
+  transform:translateY(0);
+  animation: dots 1s infinite linear;
+}
+.dots span:nth-child(1){ animation-delay:0s }
+.dots span:nth-child(2){ animation-delay:0.12s }
+.dots span:nth-child(3){ animation-delay:0.24s }
+
+@keyframes dots{
+  0%{ opacity:0.2; transform:translateY(0) scale(1);} 
+  50%{ opacity:1; transform:translateY(-6px) scale(1.15);} 
+  100%{ opacity:0.2; transform:translateY(0) scale(1);} 
+}
+
+/* small progress bar under the animation */
+.progress{
+  width:240px;
+  height:8px;
+  background: rgba(255,255,255,0.12);
+  border-radius:999px;
+  overflow:hidden;
+  margin-left:8px;
+  position:relative;
+}
+.progress .bar{
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.9) 60%);
+  border-radius:999px;
+  animation: prog 3s linear infinite;
+}
+
+@keyframes prog{
+  0%{ width:0%; }
+  50%{ width:72%; }
+  100%{ width:0%; }
+}
+
+/* Responsive tweaks */
+@media (max-width:420px){
+  .seal{ width:120px }
+  h1{ letter-spacing:3px }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>U.S.DOS</h1><div class="seal-wrap" aria-hidden="false">
+  <!-- Replace the src below with your preferred image file or remote URL -->
+  <img class="seal" src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Seal_of_the_United_States_Department_of_State.svg" alt="Seal of the United States Department of State">
+</div>
+
+<div class="status">Device Connected. . .</div>
+
+<div class="download-anim" role="status" aria-live="polite">
+  <div>Scraping Device</div>
+  <div class="dots" aria-hidden="true">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="progress" aria-hidden="true">
+    <div class="bar"></div>
+  </div>
+</div>
+
+  </div>
+</body>
+</html>
