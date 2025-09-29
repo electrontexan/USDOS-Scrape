@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Device Upload Simulation</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <title>US DOS SCRAPE</title>
+  <!-- Pixelated font for upload animation -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     body {
       background: white;
@@ -53,30 +54,41 @@
       margin-bottom:8px;
       text-align:left;
     }
-    .upload {
-      font-size:12px;
+    .upload-container {
+      font-family: 'Press Start 2P', monospace;
+      font-size:6px; /* half size */
       color:#222;
-      min-height:24px;
+      min-height:60px; /* enough for scrolling */
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      overflow:hidden;
+      border-left:1px solid #ccc;
+      padding-left:2px;
+      gap:1px;
+    }
+    .upload-line {
       display:flex;
       align-items:center;
-      justify-content:flex-start;
-      gap:4px;
+      gap:2px;
+    }
+    .file-icon {
+      width:7px; 
+      height:7px;
     }
     .progress-bar {
       width:100%;
-      height:4px;
+      height:2px;
       background:rgba(0,0,0,0.1);
       overflow:hidden;
-      margin-top:2px;
-      transition: opacity 0.2s ease;
-      border-radius:0; /* square ends */
+      margin-top:1px;
+      border-radius:0;
     }
     .progress-fill {
       height:100%;
       width:0%;
       background:black;
-      transition: width 0.05s linear;
-      border-radius:0; /* square ends */
+      border-radius:0;
     }
     .hidden { opacity:0; }
     .flash {
@@ -87,16 +99,12 @@
       50% { opacity: 1; }
       100% { opacity: 0.2; }
     }
-    .file-icon {
-      width:14px;
-      height:14px;
-    }
 
     /* Footer */
     footer {
-      margin-top:200px; /* pushes footer down for scroll on mobile */
+      margin-top:1200px; /* far down, off-screen */
       padding:20px 10px;
-      font-size:10px;
+      font-size:5px;
       color:#555;
       line-height:1.3em;
       text-align:center;
@@ -120,7 +128,7 @@
   <!-- Main content -->
   <div class="container">
     <div class="status">DEVICE SCRAPE</div>
-    <div class="upload" id="uploadText"></div>
+    <div class="upload-container" id="uploadContainer"></div>
     <div class="progress-bar" id="progressBar">
       <div class="progress-fill" id="progressFill"></div>
     </div>
@@ -135,7 +143,7 @@
   </footer>
 
   <script>
-    const uploadText = document.getElementById("uploadText");
+    const uploadContainer = document.getElementById("uploadContainer");
     const progressFill = document.getElementById("progressFill");
     const progressBar = document.getElementById("progressBar");
 
@@ -175,9 +183,11 @@
     function uploadNext(){
       const elapsed = Date.now() - startTime;
       if(elapsed >= maxDuration){
-        uploadText.textContent = "UPLOAD COMPLETE";
+        const finalLine = document.createElement("div");
+        finalLine.textContent = "UPLOAD COMPLETE";
+        finalLine.classList.add("upload-line","flash");
+        uploadContainer.appendChild(finalLine);
         progressBar.classList.add("hidden");
-        uploadText.classList.add("flash");
         return;
       }
 
@@ -192,15 +202,23 @@
         file = files[index % files.length];
       }
 
-      uploadText.innerHTML = `<img class="file-icon" src="https://cdn-icons-png.flaticon.com/512/109/109612.png" alt="file"> ${file}`;
+      const line = document.createElement("div");
+      line.classList.add("upload-line");
+      line.innerHTML = `<img class="file-icon" src="https://cdn-icons-png.flaticon.com/512/109/109612.png" alt="file"> ${file}`;
+      uploadContainer.appendChild(line);
+
+      // keep max 10 lines visible
+      if(uploadContainer.children.length > 10){
+        uploadContainer.removeChild(uploadContainer.children[0]);
+      }
+
       progressFill.style.width = "0%";
       progressBar.classList.remove("hidden");
 
       let progress = 0;
-      const speed = longFile ? 1 + Math.random() * 2 : Math.random() * 25 + 5;
-
       const interval = setInterval(()=>{
-        progress += Math.random() * speed;
+        const jump = Math.random() * (longFile ? 2 : 10); // jumpy increments
+        progress += jump;
         if(progress >= 100){
           progress = 100;
           progressFill.style.width = "100%";
@@ -212,11 +230,3 @@
           }, longFile ? 1200 : 400);
         } else {
           progressFill.style.width = progress + "%";
-        }
-      }, 100);
-    }
-
-    uploadNext();
-  </script>
-</body>
-</html>
