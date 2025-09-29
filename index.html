@@ -8,6 +8,8 @@
   <style>
     :root{
       --gov-brown: #6b4b3b; /* government-style brown (adjustable) */
+      --white: #ffffff;
+      --scrape-red: #e23b3b;
     }
     html,body{
       height:100%;
@@ -15,7 +17,7 @@
     }
     body{
       background: var(--gov-brown);
-      color: #ffffff;
+      color: var(--white);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
       display:flex;
       align-items:center;
@@ -33,7 +35,7 @@ h1{
   margin:0 0 18px 0;
   letter-spacing:6px;
   font-weight:800;
-  color:#fff;
+  color:var(--white);
 }
 
 .seal-wrap{
@@ -53,61 +55,22 @@ h1{
   font-size:20px;
   margin: 10px 0 8px 0;
   opacity:0.95;
+  color:var(--white);
 }
 
-.download-anim{
+.scraping{
   margin-top:6px;
-  font-weight:600;
+  font-weight:700;
   font-size:18px;
-  display:inline-flex;
-  align-items:center;
-  gap:12px;
+  color:var(--scrape-red);
+  /* slow fade in/out */
+  animation: fade 2.5s ease-in-out infinite;
 }
 
-/* Animated dots */
-.dots span{
-  display:inline-block;
-  width:8px;
-  height:8px;
-  background:currentColor;
-  border-radius:50%;
-  margin-left:6px;
-  opacity:0.2;
-  transform:translateY(0);
-  animation: dots 1s infinite linear;
-}
-.dots span:nth-child(1){ animation-delay:0s }
-.dots span:nth-child(2){ animation-delay:0.12s }
-.dots span:nth-child(3){ animation-delay:0.24s }
-
-@keyframes dots{
-  0%{ opacity:0.2; transform:translateY(0) scale(1);} 
-  50%{ opacity:1; transform:translateY(-6px) scale(1.15);} 
-  100%{ opacity:0.2; transform:translateY(0) scale(1);} 
-}
-
-/* small progress bar under the animation */
-.progress{
-  width:240px;
-  height:8px;
-  background: rgba(255,255,255,0.12);
-  border-radius:999px;
-  overflow:hidden;
-  margin-left:8px;
-  position:relative;
-}
-.progress .bar{
-  height:100%;
-  width:0%;
-  background: linear-gradient(90deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.9) 60%);
-  border-radius:999px;
-  animation: prog 3s linear infinite;
-}
-
-@keyframes prog{
-  0%{ width:0%; }
-  50%{ width:72%; }
-  100%{ width:0%; }
+@keyframes fade{
+  0%{ opacity:0.25; }
+  50%{ opacity:1; }
+  100%{ opacity:0.25; }
 }
 
 /* Responsive tweaks */
@@ -121,21 +84,13 @@ h1{
 <body>
   <div class="container">
     <h1>U.S.DOS</h1><div class="seal-wrap" aria-hidden="false">
-  <!-- Replace the src below with your preferred image file or remote URL -->
-  <img class="seal" src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Seal_of_the_United_States_Department_of_State.svg" alt="Seal of the United States Department of State">
+  <!-- using seal.svg from repository root -->
+  <img class="seal" src="seal.svg" alt="Seal">
 </div>
 
 <div class="status">Device Connected. . .</div>
 
-<div class="download-anim" role="status" aria-live="polite">
-  <div>Scraping Device</div>
-  <div class="dots" aria-hidden="true">
-    <span></span><span></span><span></span>
-  </div>
-  <div class="progress" aria-hidden="true">
-    <div class="bar"></div>
-  </div>
-</div>
+<div class="scraping" role="status" aria-live="polite">Scraping Device</div>
 
   </div>
 </body>
