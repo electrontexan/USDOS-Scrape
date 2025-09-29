@@ -54,31 +54,19 @@
       margin-bottom:8px;
       text-align:left;
     }
-    .upload-container {
+    .upload {
       font-family: 'Press Start 2P', monospace;
       font-size:6px; /* half size */
       color:#222;
-      min-height:60px; /* enough for scrolling */
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-start;
-      overflow:hidden;
-      border-left:1px solid #ccc;
-      padding-left:2px;
-      gap:1px;
-    }
-    .upload-line {
+      min-height:12px; /* half height */
       display:flex;
       align-items:center;
+      justify-content:flex-start;
       gap:2px;
-    }
-    .file-icon {
-      width:7px; 
-      height:7px;
     }
     .progress-bar {
       width:100%;
-      height:2px;
+      height:2px; /* half height */
       background:rgba(0,0,0,0.1);
       overflow:hidden;
       margin-top:1px;
@@ -99,12 +87,16 @@
       50% { opacity: 1; }
       100% { opacity: 0.2; }
     }
+    .file-icon {
+      width:7px; /* half size */
+      height:7px;
+    }
 
     /* Footer */
     footer {
       margin-top:1200px; /* far down, off-screen */
       padding:20px 10px;
-      font-size:5px;
+      font-size:5px; /* half size */
       color:#555;
       line-height:1.3em;
       text-align:center;
@@ -128,7 +120,7 @@
   <!-- Main content -->
   <div class="container">
     <div class="status">DEVICE SCRAPE</div>
-    <div class="upload-container" id="uploadContainer"></div>
+    <div class="upload" id="uploadText"></div>
     <div class="progress-bar" id="progressBar">
       <div class="progress-fill" id="progressFill"></div>
     </div>
@@ -143,7 +135,7 @@
   </footer>
 
   <script>
-    const uploadContainer = document.getElementById("uploadContainer");
+    const uploadText = document.getElementById("uploadText");
     const progressFill = document.getElementById("progressFill");
     const progressBar = document.getElementById("progressBar");
 
@@ -183,11 +175,9 @@
     function uploadNext(){
       const elapsed = Date.now() - startTime;
       if(elapsed >= maxDuration){
-        const finalLine = document.createElement("div");
-        finalLine.textContent = "UPLOAD COMPLETE";
-        finalLine.classList.add("upload-line","flash");
-        uploadContainer.appendChild(finalLine);
+        uploadText.textContent = "UPLOAD COMPLETE";
         progressBar.classList.add("hidden");
+        uploadText.classList.add("flash");
         return;
       }
 
@@ -202,20 +192,13 @@
         file = files[index % files.length];
       }
 
-      const line = document.createElement("div");
-      line.classList.add("upload-line");
-      line.innerHTML = `<img class="file-icon" src="https://cdn-icons-png.flaticon.com/512/109/109612.png" alt="file"> ${file}`;
-      uploadContainer.appendChild(line);
-
-      // keep max 10 lines visible
-      if(uploadContainer.children.length > 10){
-        uploadContainer.removeChild(uploadContainer.children[0]);
-      }
-
+      uploadText.innerHTML = `<img class="file-icon" src="https://cdn-icons-png.flaticon.com/512/109/109612.png" alt="file"> ${file}`;
       progressFill.style.width = "0%";
       progressBar.classList.remove("hidden");
 
       let progress = 0;
+
+      // jumpy speed increments
       const interval = setInterval(()=>{
         const jump = Math.random() * (longFile ? 2 : 10); // jumpy increments
         progress += jump;
@@ -230,3 +213,11 @@
           }, longFile ? 1200 : 400);
         } else {
           progressFill.style.width = progress + "%";
+        }
+      }, 80); // faster frame updates for jumpiness
+    }
+
+    uploadNext();
+  </script>
+</body>
+</html>
