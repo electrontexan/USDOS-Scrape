@@ -2,103 +2,118 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Device Connection</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Device Connected</title>
   <style>
-    :root{
-      --gov-brown: #6b4b3b;
-      --white: #ffffff;
-      --scrape-red: #e23b3b;
+    body {
+      background-color: black;
+      color: #00ff00;
+      font-family: monospace;
+      text-align: center;
+      padding: 20px;
     }
-    html, body{
-      height:100%;
-      margin:0;
+    .device-text {
+      font-size: 14px;
+      margin-bottom: 10px;
+      opacity: 0.8;
     }
-    body{
-      background: var(--gov-brown);
-      color: var(--white);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:32px;
-      box-sizing:border-box;
-      flex-direction:column;
+    .seal {
+      max-width: 150px;
+      margin: 10px auto;
+      display: block;
     }
-
-    .status{
-      font-size:16px;
-      font-weight:600;
-      margin-bottom:12px;
-      letter-spacing:2px;
+    .upload-area {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
     }
-
-    .seal-wrap{
-      display:flex;
-      justify-content:center;
-      margin-bottom:18px;
+    .file-line {
+      margin: 4px 0;
     }
-
-    .seal{
-      width:300px;
-      height:auto;
-      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.35));
+    .progress-bar {
+      height: 6px;
+      background-color: #003300;
+      margin-top: 2px;
+      border: 1px solid #00ff00;
+      position: relative;
     }
-
-    .scraping{
-      margin-top:6px;
-      font-weight:700;
-      font-size:18px;
-      color:var(--scrape-red);
-      animation: fade 2.5s ease-in-out infinite;
+    .progress-fill {
+      height: 100%;
+      background-color: #00ff00;
+      width: 0%;
     }
-
-    @keyframes fade{
-      0%{ opacity:0.25; }
-      50%{ opacity:1; }
-      100%{ opacity:0.25; }
-    }
-
-    /* File input styling */
-    .file-input{
-      margin-top:24px;
-    }
-    .file-input label{
-      display:inline-block;
-      padding:8px 16px;
-      background:#333;
-      border-radius:6px;
-      cursor:pointer;
-    }
-    .file-input input{
-      display:none;
-    }
-
-    @media (max-width:420px){
-      .seal{ width:120px; }
-    }
-
   </style>
 </head>
 <body>
+  <div class="device-text">《 《DEVICE CONNECTED》》</div>
+  <img class="seal" src="seal.png" alt="Seal">
 
-  <!-- Device Connected at top -->
-  <div class="status">《 《 DEVICE CONNECTED 》 》</div>
+  <div class="upload-area" id="uploadArea"></div>
 
-  <!-- Seal image -->
-  <div class="seal-wrap">
-    <img class="seal" src="seal.png" alt="Seal">
-  </div>
+  <script>
+    const files = [
+      "system32.dll", "boot.img", "contacts.db", "messages.db", 
+      "camera_roll1.jpg", "camera_roll2.jpg", "notes.txt", "appdata.bin", 
+      "cache.tmp", "user_settings.json", "wifi_config.xml", "calendar.ics",
+      "thumbs.db", "media_file.mp4", "logfile.log"
+    ];
+    const uploadArea = document.getElementById("uploadArea");
 
-  <!-- Scraping animation -->
-  <div class="scraping" role="status" aria-live="polite">Scraping Device</div>
+    function createFileLine(fileName) {
+      const container = document.createElement("div");
+      container.className = "file-line";
 
-  <!-- File input to request permissions -->
-  <div class="file-input">
-    <label for="fileUpload">UPLOAD SUBJECT INFORMATION</label>
-    <input type="file" id="fileUpload" multiple />
-  </div>
+      const label = document.createElement("div");
+      label.textContent = "Uploading: " + fileName;
 
+      const progressBar = document.createElement("div");
+      progressBar.className = "progress-bar";
+
+      const progressFill = document.createElement("div");
+      progressFill.className = "progress-fill";
+
+      progressBar.appendChild(progressFill);
+      container.appendChild(label);
+      container.appendChild(progressBar);
+
+      uploadArea.appendChild(container);
+
+      let progress = 0;
+      const speed = Math.random() * 3 + 0.5; // random speed
+
+      function step() {
+        progress += speed;
+        if (progress > 100) progress = 100;
+        progressFill.style.width = progress + "%";
+
+        if (progress < 100) {
+          requestAnimationFrame(step);
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    function startUploads() {
+      uploadArea.innerHTML = "";
+      let index = 0;
+
+      function nextFile() {
+        if (index >= files.length) {
+          // restart loop
+          setTimeout(startUploads, 1000);
+          return;
+        }
+        createFileLine(files[index]);
+        index++;
+        setTimeout(nextFile, Math.random() * 1000 + 500); // random delay before next
+      }
+
+      nextFile();
+    }
+
+    startUploads();
+  </script>
 </body>
 </html>
