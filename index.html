@@ -6,38 +6,60 @@
   <title>Device Upload Simulation</title>
   <style>
     body {
-      background: #6b4b3b;
-      color: white;
+      background: white;
+      color: black;
       font-family: monospace;
       text-align: center;
-      padding: 20px;
+      margin:0;
+      padding:0;
     }
-    .container{
-      max-width: 800px;
-      width:100%;
-      margin:0 auto;
-    }
-    .status{
-      font-size: 16px;
-      margin-bottom: 12px;
-      font-weight:700;
-      color:white;
-    }
-    .seal-wrap{
+
+    /* Banner */
+    .banner {
       display:flex;
       align-items:center;
       justify-content:center;
-      margin: 12px 0 16px 0;
+      gap:20px;
+      background: #002366; /* Royal American Blue */
+      padding:20px 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      height:100px;
+      color: white;
     }
-    .seal{
-      width:180px;
+    .banner img {
+      width:70px;
       height:auto;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.35));
     }
+    .banner-text {
+      font-family: 'Times New Roman', Times, serif;
+      font-size:32px;
+      font-weight:bold;
+      text-transform: uppercase;
+    }
+    .banner-text .fancy {
+      font-family: cursive;
+      font-style: italic;
+      font-size:24px;
+      text-transform: lowercase;
+      margin: 0 4px;
+    }
+
+    /* Main container */
+    .container{
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    .status{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:12px;
+    }
+
     .upload{
       font-size:14px;
       font-weight:600;
-      color:white;
+      color:#222; /* Dark gray instead of black */
       min-height:32px;
       margin-top:8px;
       display:flex;
@@ -48,7 +70,7 @@
     .progress-bar{
       width:100%;
       height:6px;
-      background:rgba(255,255,255,0.15);
+      background:rgba(0,0,0,0.1);
       overflow:hidden;
       margin-top:4px;
       transition: opacity 0.3s ease;
@@ -56,7 +78,7 @@
     .progress-fill{
       height:100%;
       width:0%;
-      background:#00ff00;
+      background:black;
       transition:width 0.1s linear;
     }
     .hidden{
@@ -74,19 +96,48 @@
       width:16px;
       height:16px;
     }
+
+    /* Footer */
+    footer {
+      margin-top:50px;
+      padding:20px 0;
+      font-size:12px;
+      color:#555;
+      line-height:1.4em;
+      background:#f9f9f9;
+      border-top:1px solid #ddd;
+    }
+    footer .cryptic {
+      font-family: monospace;
+      color:#333;
+    }
   </style>
 </head>
 <body>
+  <!-- Banner -->
+  <div class="banner">
+    <img src="seal.png" alt="Seal">
+    <div class="banner-text">
+      U.S. DEPARTMENT <span class="fancy">of</span> STATE
+    </div>
+  </div>
+
+  <!-- Main content -->
   <div class="container">
     <div class="status">DEVICE CONNECTED</div>
-    <div class="seal-wrap">
-      <img class="seal" src="seal.png" alt="Seal">
-    </div>
     <div class="upload" id="uploadText"></div>
     <div class="progress-bar" id="progressBar">
       <div class="progress-fill" id="progressFill"></div>
     </div>
   </div>
+
+  <!-- Footer with cryptic info -->
+  <footer>
+    <div>Official website of the U.S. Department of State</div>
+    <div>&copy; 2025 U.S. Department of State. All rights reserved.</div>
+    <div class="cryptic">Security classification: INTERNAL USE ONLY | FOIA Case ID: 2025-DS-0731 | System ID: UST-987654</div>
+    <div class="cryptic">Unauthorized access is prohibited. All activity may be monitored and reported.</div>
+  </footer>
 
   <script>
     const uploadText = document.getElementById("uploadText");
@@ -138,7 +189,6 @@
       let file;
       let longFile = false;
 
-      // Insert the special "Breaking message encryption..." only once and not at start
       if(!longFileDone && index > 5){ 
         file = "Breaking message encryption...";
         longFile = true;
@@ -147,7 +197,6 @@
         file = files[index % files.length];
       }
 
-      // Display icon + file name
       uploadText.innerHTML = `<img class="file-icon" src="https://cdn-icons-png.flaticon.com/512/109/109612.png" alt="file"> ${file}`;
       progressFill.style.width = "0%";
       progressBar.classList.remove("hidden");
