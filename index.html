@@ -10,16 +10,16 @@
       color: white;
       font-family: monospace;
       text-align: center;
-      padding: 32px;
+      padding: 20px;
     }
     .container{
-      max-width:900px;
+      max-width: 800px;
       width:100%;
       margin:0 auto;
     }
     .status{
-      font-size:20px;
-      margin-bottom:20px;
+      font-size: 16px;
+      margin-bottom: 12px;
       font-weight:700;
       color:white;
     }
@@ -27,34 +27,37 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      margin: 12px 0 24px 0;
+      margin: 12px 0 16px 0;
     }
     .seal{
-      width:220px;
+      width:180px;
       height:auto;
-      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.35));
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.35));
     }
     .upload{
-      font-size:18px;
+      font-size:14px;
       font-weight:600;
-      color:#00ff00;
-      min-height:40px;
-      margin-top:12px;
+      color:white;
+      min-height:32px;
+      margin-top:8px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:6px;
     }
     .progress-bar{
       width:100%;
-      height:8px;
+      height:6px;
       background:rgba(255,255,255,0.15);
-      border-radius:4px;
       overflow:hidden;
-      margin-top:6px;
-      transition: opacity 0.5s ease;
+      margin-top:4px;
+      transition: opacity 0.3s ease;
     }
     .progress-fill{
       height:100%;
       width:0%;
       background:#00ff00;
-      transition:width 0.2s linear;
+      transition:width 0.1s linear;
     }
     .hidden{
       opacity:0;
@@ -67,6 +70,10 @@
       50% { opacity: 1; }
       100% { opacity: 0.2; }
     }
+    .file-icon {
+      width:16px;
+      height:16px;
+    }
   </style>
 </head>
 <body>
@@ -75,7 +82,7 @@
     <div class="seal-wrap">
       <img class="seal" src="seal.png" alt="Seal">
     </div>
-    <div class="upload" id="uploadText">Initializing...</div>
+    <div class="upload" id="uploadText"></div>
     <div class="progress-bar" id="progressBar">
       <div class="progress-fill" id="progressFill"></div>
     </div>
@@ -98,17 +105,30 @@
       "music/track01.mp3","music/track02.mp3","music/track03.mp3","music/track04.mp3",
       "pictures/img001.jpg","pictures/img002.jpg","pictures/img003.jpg","pictures/img004.jpg",
       "system/fonts.ttf","system/lang.dat","system/ui_config.json","users/profile1.cfg",
-      "users/profile2.cfg","bin/exe_01","bin/exe_02","bin/exe_03","bin/exe_04"
+      "users/profile2.cfg","bin/exe_01","bin/exe_02","bin/exe_03","bin/exe_04",
+      "temp/cache01.tmp","temp/cache02.tmp","temp/cache03.tmp","temp/cache04.tmp","temp/cache05.tmp",
+      "documents/doc01.txt","documents/doc02.txt","documents/doc03.txt","documents/doc04.txt",
+      "documents/doc05.txt","downloads/file3.zip","downloads/file4.zip","downloads/file5.zip",
+      "media/video03.mp4","media/video04.mp4","media/song2.mp3","media/song3.mp3","media/song4.mp3",
+      "backup/2024-07-01.bak","backup/2024-08-01.bak","logs/log01.txt","logs/log02.txt","logs/log03.txt",
+      "apps/app1.apk","apps/app2.apk","apps/app3.apk","system/font1.ttf","system/font2.ttf",
+      "system/lang1.dat","system/lang2.dat","users/profile3.cfg","users/profile4.cfg",
+      "cloud/file1.json","cloud/file2.json","cloud/file3.json","cloud/file4.json",
+      "music/track05.mp3","music/track06.mp3","music/track07.mp3","pictures/img005.jpg","pictures/img006.jpg",
+      "pictures/img007.jpg","pictures/img008.jpg","downloads/file6.pdf","downloads/file7.pdf",
+      "downloads/file8.pdf","camera/video5.mp4","camera/video6.mp4","messages/chat003.db",
+      "messages/chat004.db","contacts/list2.vcf","contacts/list3.vcf","system/update.bin",
+      "system/kernel2.sys","android/accounts2.xml","android/settings2.db"
     ];
 
     let index = 0;
+    let longFileDone = false;
     const startTime = Date.now();
-    const maxDuration = 2 * 60 * 1000; // 2 minutes in milliseconds
+    const maxDuration = 2 * 60 * 1000; // 2 minutes
 
     function uploadNext(){
       const elapsed = Date.now() - startTime;
       if(elapsed >= maxDuration){
-        // End uploads and show UPLOAD COMPLETE
         uploadText.textContent = "UPLOAD COMPLETE";
         progressBar.classList.add("hidden");
         uploadText.classList.add("flash");
@@ -118,20 +138,22 @@
       let file;
       let longFile = false;
 
-      // Every 15 files, insert the long special file
-      if(index % 15 === 0){
+      // Insert the special "Breaking message encryption..." only once and not at start
+      if(!longFileDone && index > 5){ 
         file = "Breaking message encryption...";
         longFile = true;
+        longFileDone = true;
       } else {
         file = files[index % files.length];
       }
 
-      uploadText.textContent = "Uploading: " + file;
+      // Display icon + file name
+      uploadText.innerHTML = `<img class="file-icon" src="https://cdn-icons-png.flaticon.com/512/109/109612.png" alt="file"> ${file}`;
       progressFill.style.width = "0%";
       progressBar.classList.remove("hidden");
 
       let progress = 0;
-      const speed = longFile ? 1 + Math.random() * 2 : Math.random() * 20 + 5;
+      const speed = longFile ? 1 + Math.random() * 2 : Math.random() * 25 + 5;
 
       const interval = setInterval(()=>{
         progress += Math.random() * speed;
@@ -143,7 +165,7 @@
           setTimeout(()=>{
             index++;
             uploadNext();
-          }, longFile ? 1000 : 400);
+          }, longFile ? 1200 : 400);
         } else {
           progressFill.style.width = progress + "%";
         }
